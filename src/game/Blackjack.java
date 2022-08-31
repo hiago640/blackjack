@@ -1,5 +1,7 @@
 package game;
 
+import java.util.Scanner;
+
 public class Blackjack {
 
 	public static final String ANSI_RESET = "\u001B[0m";
@@ -35,14 +37,19 @@ public class Blackjack {
 	}
 
 	private void iniciarRodada() {
-		pause();
-		
+
 		if (!placar.placarZerado()) {
+			pause();
+
+			
 			System.out.println(ANSI_CYAN + placar + ANSI_RESET);
 			dealer.descartarMao(descarte);
 			jogador.descartarMao(descarte);
 		}
-
+		
+		if (baralho.cartasRestantes() < 4)
+			baralho.recarregarBaralhoFromDescarte(descarte);
+		
 		dealer.pegarCarta(baralho);
 		dealer.pegarCarta(baralho);
 
@@ -64,35 +71,38 @@ public class Blackjack {
 			}
 			iniciarRodada();
 		}
-		
-		if(jogador.hasBlackjack()) {
+
+		if (jogador.hasBlackjack()) {
 			System.out.println(ANSI_GREEN + "Você possui Blackjack! Você venceu." + ANSI_RESET);
 			placar.setVitorias();
 			iniciarRodada();
 		}
-		
+
 		jogador.tomarDecisao(baralho, descarte);
-		
+
 		if (jogador.getPontuacao() > 21) {
 			System.out.println(ANSI_RED + "Você estourou!" + ANSI_RESET);
 			placar.setDerrotas();
 			iniciarRodada();
 		}
-		
+
 		dealer.mostrarMao();
-		
-		while (dealer.getPontuacao() < 17)
+
+		while (dealer.getPontuacao() < 17){
+			System.out.println();
 			dealer.descerCarta(baralho, descarte);
-		
-		if(dealer.getPontuacao() > 21) {
+		}
+
+		if (dealer.getPontuacao() > 21) {
+			System.out.println(ANSI_GREEN + "Você venceu." + ANSI_RESET);
 			placar.setVitorias();
 			iniciarRodada();
 		}
-		
-		if(dealer.getPontuacao() > jogador.getPontuacao()) {
+
+		if (dealer.getPontuacao() > jogador.getPontuacao()) {
 			System.out.println(ANSI_RED + "Você perdeu." + ANSI_RESET);
 			placar.setDerrotas();
-		} else if (dealer.getPontuacao() < jogador.getPontuacao()){
+		} else if (dealer.getPontuacao() < jogador.getPontuacao()) {
 			System.out.println(ANSI_GREEN + "Você venceu." + ANSI_RESET);
 			placar.setVitorias();
 		} else {
@@ -100,18 +110,18 @@ public class Blackjack {
 			placar.setPushes();
 		}
 		iniciarRodada();
-		
+
 	}
 
-	public static void pause(){
-		try {
-			Thread.sleep(1500);
-			System.out.print("\033[H\033[2J");
-			System.out.flush();
-			System.out.println("\n\n\n");
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
+	public static void pause() {
+		Scanner i = new Scanner(System.in);
+		System.out.print("\n Pressione uma tecla para continuar...");
+		i.nextLine();
+
+		System.out.print("\033[H\033[2J");
+		System.out.flush();
+		System.out.println("\n\n\n");
+
 	}
 
 }

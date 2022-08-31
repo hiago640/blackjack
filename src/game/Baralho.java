@@ -51,9 +51,9 @@ public class Baralho {
 	}
 	
 	public void recarregarBaralhoFromDescarte(Baralho descarte) {
-		Collections.copy(this.baralho, descarte.getCartas());
-		this.embaralhar();
+		this.baralho.addAll(descarte.getCartas());
 		descarte.limparBaralho();
+		this.embaralhar();
 		System.out.println("Criando novo baralho a partir da pilha de descartes.");
 	}
 
